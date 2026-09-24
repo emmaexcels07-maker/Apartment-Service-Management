@@ -222,6 +222,61 @@ const money = value =>
         maximumFractionDigits: 0
     }).format(Number(value || 0));
 const dateInput = date => date.toISOString().split("T")[0];
+
+function normalizeStatus(value) {
+    return String(value || "").trim();
+}
+
+function parseDate(dateValue) {
+    if (!dateValue) return null;
+
+    const timestamp = new Date(`${dateValue}T12:00:00`);
+
+    return Number.isNaN(timestamp.getTime()) ? null : timestamp;
+}
+
+function dateRangeOverlaps(startA, endA, startB, endB) {
+    const firstStart = parseDate(startA);
+    const firstEnd = parseDate(endA);
+    const secondStart = parseDate(startB);
+    const secondEnd = parseDate(endB);
+
+    if (!firstStart || !firstEnd || !secondStart || !secondEnd) {
+        return false;
+    }
+
+    return firstStart < secondEnd && secondStart < firstEnd;
+}
+
+function findConflictingBooking(apartmentId, checkIn, checkOut, ignoreBookingId = null) {
+    return bookings().find(booking => {
+        if (Number(booking.apartmentId) !== Number(apartmentId)) return false;
+        if (ignoreBookingId && Number(booking.id) === Number(ignoreBookingId)) return false;
+
+        const status = normalizeStatus(booking.status);
+        if (["Cancelled", "Rejected"].includes(status)) return false;
+
+        return dateRangeOverlaps(booking.checkIn, booking.checkOut, checkIn, checkOut);
+    });
+}
+
+function syncApartmentAvailability() {
+    const today = dateInput(new Date());
+
+    apartments().forEach(apartment => {
+        const activeBookings = bookings().filter(booking => {
+            if (Number(booking.apartmentId) !== Number(apartment.id)) return false;
+
+            const status = normalizeStatus(booking.status);
+            if (["Cancelled", "Rejected"].includes(status)) return false;
+
+            return parseDate(booking.checkOut) >= parseDate(today);
+        });
+
+        apartment.status = activeBookings.length ? "Booked" : "Available";
+    });
+}
+
 function demoUser(type) {
     const users = {
         customer: {
@@ -332,19 +387,23 @@ function renderApartments() {
     const grid = document.getElementById("apartmentGrid");
     if (!grid) return;
 
+    syncApartmentAvailability();
+
     const location = document.getElementById("locationFilter")?.value || "all";
     const type = document.getElementById("typeFilter")?.value || "all";
     const price = document.getElementById("priceFilter")?.value || "all";
 
-    const list = apartments().filter(a => {
-        const facility = facilityById(a.facilityId);
+    const list = apartments()
+        .filter(a => {
+            const facility = facilityById(a.facilityId);
 
-        return (
-            (location === "all" || facility?.address.includes(location)) &&
-            (type === "all" || a.type === type) &&
-            (price === "all" || a.price <= Number(price))
-        );
-    });
+            return (
+                (location === "all" || facility?.address.includes(location)) &&
+                (type === "all" || a.type === type) &&
+                (price === "all" || a.price <= Number(price))
+            );
+        })
+        .sort((a, b) => a.price - b.price);
 
     grid.innerHTML = list.length
         ? list.map((a, i) => {
@@ -916,14 +975,14 @@ function renderStats() {
 
         stats = [
             ["Bookings", mine.length, "📅"],
-            ["Upcoming Stays", mine.filter(b => b.status === "Confirmed").length, "🏡"],
+            ["Upcoming Stays", mine.filter(b => ["Confirmed", "Pending"].includes(normalizeStatus(b.status))).length, "🏡"],
             ["Spent", money(mine.reduce((s, b) => s + +b.total, 0)), "💰"],
             ["Fav. Property", mine[0]?.facilityName || "N/A", "⭐"]
         ];
     } else {
         stats = [
             ["Apartments", apartments().length, "🏠"],
-            ["Active Bookings", bookings().filter(b => b.status === "Confirmed").length, "📌"],
+            ["Active Bookings", bookings().filter(b => ["Confirmed", "Pending"].includes(normalizeStatus(b.status))).length, "📌"],
             ["Customers", customers().length, "👥"],
             ["Revenue", money(bookings().reduce((s, b) => s + +b.total, 0)), "💸"]
         ];
@@ -961,9 +1020,13 @@ function table(title, headers, rows) {
 }
 
 function bookingStatusLabel(booking) {
-    return booking.status === "Pending"
-        ? "Awaiting Confirmation"
-        : booking.status;
+    const status = normalizeStatus(booking.status);
+
+    if (status === "Pending") return "Awaiting Confirmation";
+    if (status === "Paid") return "Confirmed";
+    if (status === "Confirmed") return "Confirmed";
+
+    return status || "Pending";
 }
 
 function bookingStatusClass(booking) {
@@ -1752,6 +1815,20 @@ function handleBookingSubmit(e) {
         return;
     }
 
+    if (guests < 1 || guests > Math.max(1, apartment.bedrooms + 2)) {
+        alert(`Guest count should fit the apartment capacity (${Math.max(1, apartment.bedrooms + 2)} max).`);
+        return;
+    }
+
+    const conflictingBooking = findConflictingBooking(apartment.id, checkIn, checkOut);
+    if (conflictingBooking) {
+        alert(
+            `Sorry, ${apartment.name} is already reserved for the selected dates.\n\n` +
+            `Existing booking: ${conflictingBooking.checkIn} to ${conflictingBooking.checkOut}`
+        );
+        return;
+    }
+
     const facility = facilityById(apartment.facilityId);
 
     const nights = Math.ceil(
@@ -1824,8 +1901,8 @@ function handleBookingSubmit(e) {
 
         total,
 
-        status: "Awaiting Confirmation",
-        paymentStatus: "Awaiting Confirmation",
+        status: "Pending",
+        paymentStatus: "Pending",
 
         createdAt: dateInput(new Date())
     };
@@ -1893,13 +1970,13 @@ function confirmPayment(id) {
 
     if (!booking || booking.paymentStatus !== "Pending") return;
 
-    booking.paymentStatus = "Awaiting Confirmation";
-    booking.status = "Awaiting Confirmation";
+    booking.paymentStatus = "Paid";
+    booking.status = "Confirmed";
 
     saveData();
     renderDashboard();
     openCustomerPanel(booking.customerId, booking.customerName);
-    alert(`Payment for booking ${booking.id} is awaiting confirmation.`);
+    alert(`Payment confirmed for booking ${booking.id}.`);
 }
 
 function deleteBooking(id) {
