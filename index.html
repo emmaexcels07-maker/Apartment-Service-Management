@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StayEase - Apartment Service Management</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- ================= CUSTOMER LANDING PAGE ================= -->
+    <div id="customerPage">
+
+        <header class="navbar">
+            <div class="logo">
+                <span>🏠</span> StayEase
+            </div>
+
+            <nav>
+                <a href="#home">Home</a>
+                <a href="#apartments">Apartments</a>
+                <a href="#facilities">Facilities</a>
+                <a href="#about">About</a>
+            </nav>
+
+            <button class="btn btn-primary" onclick="openLogin()">
+                Staff Login
+            </button>
+        </header>
+
+        <main>
+
+            <!-- Hero -->
+            <section class="hero" id="home">
+                <div class="hero-content">
+                    <span class="badge">PREMIUM APARTMENT SERVICES</span>
+
+                    <h1>
+                        Find a place you'll
+                        <span>love to live.</span>
+                    </h1>
+
+                    <p>
+                        Discover comfortable apartments, premium facilities and
+                        hassle-free booking — all in one place.
+                    </p>
+
+                    <div class="hero-actions">
+                        <a href="#apartments" class="btn btn-primary">Explore Apartments</a>
+                    </div>
+                </div>
+
+                <div class="hero-card">
+                    <div class="hero-image">
+                        <span>Featured Apartment</span>
+                    </div>
+
+                    <div class="hero-card-body">
+                        <div>
+                            <h3>Luxury City Apartment</h3>
+                            <p>📍 Victoria Island, Lagos</p>
+                        </div>
+
+                        <strong>₦150,000 <small>/ night</small></strong>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Search -->
+            <section class="search-box">
+                <div class="search-item">
+                    <label>Location</label>
+                    <select id="locationFilter">
+                        <option value="all">All locations</option>
+                        <option value="Victoria Island">Victoria Island</option>
+                        <option value="Lekki">Lekki</option>
+                        <option value="Ikoyi">Ikoyi</option>
+                    </select>
+                </div>
+
+                <div class="search-item">
+                    <label>Apartment Type</label>
+                    <select id="typeFilter">
+                        <option value="all">All types</option>
+                        <option value="Studio">Studio</option>
+                        <option value="1 Bedroom">1 Bedroom</option>
+                        <option value="2 Bedroom">2 Bedroom</option>
+                        <option value="3 Bedroom">3 Bedroom</option>
+                    </select>
+                </div>
+
+                <div class="search-item">
+                    <label>Maximum Price</label>
+                    <select id="priceFilter">
+                        <option value="all">Any price</option>
+                        <option value="100000">₦100,000</option>
+                        <option value="150000">₦150,000</option>
+                        <option value="200000">₦200,000</option>
+                    </select>
+                </div>
+
+                <button class="btn btn-primary" onclick="filterApartments()">
+                    Search
+                </button>
+            </section>
+
+            <!-- Apartments -->
+            <section class="section" id="apartments">
+                <div class="section-heading">
+                    <div>
+                        <span class="section-label">OUR APARTMENTS</span>
+                        <h2>Choose your perfect stay</h2>
+                    </div>
+
+                    <button class="text-btn" onclick="resetFilters()">
+                        View all →
+                    </button>
+                </div>
+
+                <div class="apartment-grid" id="apartmentGrid"></div>
+            </section>
+
+            <!-- Facilities -->
+            <section class="section facilities-section" id="facilities">
+                <div class="center-heading">
+                    <span class="section-label">FACILITIES</span>
+                    <h2>Everything you need</h2>
+                    <p>
+                        Enjoy premium facilities designed to make your stay comfortable.
+                    </p>
+                </div>
+
+                <div class="facility-grid" id="facilityGrid"></div>
+            </section>
+
+            <!-- About -->
+            <section class="about-section" id="about">
+                <div class="about-image">
+                    <div class="about-number">12+</div>
+                    <span>Years of exceptional service</span>
+                </div>
+
+                <div class="about-content">
+                    <span class="section-label">ABOUT STAYEASE</span>
+
+                    <h2>
+                        Making apartment management simple and convenient.
+                    </h2>
+
+                    <p>
+                        StayEase connects customers with quality apartments while
+                        giving property administrators and staff powerful tools to
+                        manage bookings, facilities and customers efficiently.
+                    </p>
+
+                    <div class="about-stats">
+                        <div>
+                            <strong>120+</strong>
+                            <span>Apartments</span>
+                        </div>
+
+                        <div>
+                            <strong>15+</strong>
+                            <span>Facilities</span>
+                        </div>
+
+                        <div>
+                            <strong>2,500+</strong>
+                            <span>Customers</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <footer>
+            <div class="footer-logo">🏠 StayEase</div>
+            <p>Premium apartment management made simple.</p>
+            <p>© 2026 StayEase. All rights reserved.</p>
+        </footer>
+
+    </div>
+
+
+    <!-- ================= LOGIN PAGE ================= -->
+
+    <div id="loginPage" class="login-page hidden">
+
+        <div class="login-container">
+
+            <!-- Left Side -->
+            <div class="login-brand">
+                <div class="brand-logo">🏠</div>
+
+                <h1>StayEase</h1>
+
+                <p>
+                    Premium apartment management made simple.
+                </p>
+
+                <div class="login-info">
+                    <span>✓ Easy apartment booking</span>
+                    <span>✓ Manage reservations</span>
+                    <span>✓ Powerful management tools</span>
+                </div>
+            </div>
+
+            <!-- Right Side -->
+            <div class="login-form-container">
+
+                <span class="section-label">STAFF & ADMINISTRATION</span>
+
+                <h2>Management Login</h2>
+
+                <p>
+                    Login to manage apartments, facilities, customers and bookings.
+                </p>
+
+                <form id="loginForm">
+
+                    <!-- Username -->
+                    <div class="form-group">
+                        <label for="loginUsername">Username</label>
+
+                        <input type="text" id="loginUsername" placeholder="Enter your username" required>
+                    </div>
+
+                    <!-- Role -->
+                    <div class="form-group">
+                        <label for="loginRole">Role</label>
+
+                        <select id="loginRole" required>
+                            <option value="">Select your role</option>
+                            <option value="staff">Staff</option>
+                            <option value="admin">Administrator</option>
+                        </select>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="form-group">
+                        <label for="loginPassword">Password</label>
+
+                        <div class="password-wrapper">
+                            <input type="password" id="loginPassword" placeholder="Enter your password" required>
+
+                            <button type="button" class="show-password" onclick="togglePassword()">
+                                👁️
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Remember / Forgot -->
+                    <div class="login-options">
+                        <label class="remember-me">
+                            <input type="checkbox" id="rememberMe">
+                            <span>Remember me</span>
+                        </label>
+
+                        <a href="#" onclick="forgotPassword(event)">
+                            Forgot password?
+                        </a>
+                    </div>
+
+                    <!-- Login Button -->
+                    <button type="submit" class="btn btn-primary login-btn">
+                        Login
+                    </button>
+
+                    <!-- Error Message -->
+                    <div id="loginError" class="login-error"></div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= DASHBOARD ================= -->
+
+    <div id="dashboardPage" class="dashboard-page hidden">
+
+        <aside class="sidebar">
+
+            <div class="sidebar-logo">
+                🏠 <span>StayEase</span>
+            </div>
+
+            <div class="user-mini">
+                <div class="avatar" id="userAvatar">A</div>
+
+                <div>
+                    <strong id="userName">Administrator</strong>
+                    <small id="userRole">Administrator</small>
+                </div>
+            </div>
+
+            <nav class="dashboard-nav" id="dashboardNav"></nav>
+
+            <button class="logout-btn" onclick="logout()">
+                🚪 Logout
+            </button>
+        </aside>
+
+
+        <div class="dashboard-main">
+
+            <header class="dashboard-header">
+                <div>
+                    <button class="mobile-menu" onclick="toggleSidebar()">☰</button>
+
+                    <span class="section-label" id="dashboardLabel">
+                        DASHBOARD
+                    </span>
+
+                    <h1 id="dashboardTitle">Overview</h1>
+                </div>
+
+                <div class="header-actions">
+                    <button class="icon-btn">🔔</button>
+                    <div class="avatar">A</div>
+                </div>
+            </header>
+
+            <div class="dashboard-content">
+
+                <!-- Stats -->
+                <div class="stats-grid" id="statsGrid"></div>
+
+                <!-- Dashboard panels -->
+                <div id="dashboardContent"></div>
+
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- ================= BOOKING MODAL ================= -->
+
+    <div class="modal" id="bookingModal">
+        <div class="modal-content booking-modal">
+
+            <button class="close-btn" onclick="closeBooking()">×</button>
+
+            <span class="section-label">MAKE A RESERVATION</span>
+
+            <h2>Book Apartment</h2>
+
+            <p class="modal-subtitle">
+                Enter your details below. No account is required.
+            </p>
+
+            <form id="bookingForm">
+
+                <input type="hidden" id="bookingApartmentId">
+
+                <!-- Apartment -->
+                <div class="form-group">
+                    <label>Apartment</label>
+                    <input type="text" id="bookingApartmentName" readonly>
+                </div>
+
+                <!-- Customer Name -->
+                <div class="form-group">
+                    <label for="bookingCustomerName">Full Name</label>
+                    <input type="text" id="bookingCustomerName" placeholder="Enter your full name" required>
+                </div>
+
+                <!-- Email -->
+                <div class="form-group">
+                    <label for="bookingCustomerEmail">Email Address</label>
+                    <input type="email" id="bookingCustomerEmail" placeholder="example@email.com" required>
+                </div>
+
+                <!-- Phone -->
+                <div class="form-group">
+                    <label for="bookingCustomerPhone">Phone Number</label>
+                    <input type="tel" id="bookingCustomerPhone" placeholder="08012345678" required>
+                </div>
+
+                <!-- Dates -->
+                <div class="form-row">
+
+                    <div class="form-group">
+                        <label for="checkIn">Check-in</label>
+                        <input type="date" id="checkIn" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="checkOut">Check-out</label>
+                        <input type="date" id="checkOut" required>
+                    </div>
+
+                </div>
+
+                <!-- Guests -->
+                <div class="form-group">
+                    <label for="guestCount">Number of Guests</label>
+                    <input type="number" id="guestCount" min="1" value="1" required>
+                </div>
+
+                <!-- Special Request -->
+                <div class="form-group">
+                    <label for="specialRequest">Special Request</label>
+
+                    <textarea id="specialRequest" placeholder="Anything we should know?"></textarea>
+                </div>
+
+                <!-- Total Preview -->
+                <div class="booking-total-box">
+                    <span>Estimated Total</span>
+                    <strong id="bookingTotalPreview">₦0</strong>
+                </div>
+
+                <button type="submit" class="btn btn-primary full-width">
+                    Confirm Reservation
+                </button>
+
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= CUSTOMER SIDE PANEL ================= -->
+
+    <div class="side-panel-backdrop" id="customerPanelBackdrop" onclick="closeCustomerPanel()"></div>
+
+    <aside class="customer-side-panel" id="customerSidePanel" aria-hidden="true">
+        <button class="close-btn" onclick="closeCustomerPanel()" aria-label="Close customer details">×</button>
+        <span class="section-label">CUSTOMER DETAILS</span>
+        <h2 id="customerPanelName">Customer</h2>
+        <p class="modal-subtitle" id="customerPanelContact"></p>
+        <div class="customer-panel-details" id="customerPanelDetails"></div>
+        <div class="customer-panel-bookings">
+            <h3>Booking history</h3>
+            <div id="customerPanelBookings"></div>
+        </div>
+    </aside>
+
+    <!-- ================= FACILITY MODAL ================= -->
+
+    <div class="modal" id="facilityModal">
+
+        <div class="modal-content">
+
+            <button class="close-btn" onclick="closeFacilityModal()">
+                ×
+            </button>
+
+            <span class="section-label">
+                ADMINISTRATION
+            </span>
+
+            <h2>Add Facility</h2>
+
+            <p class="modal-subtitle">
+                Create a new apartment facility.
+            </p>
+
+            <form id="facilityForm">
+
+                <div class="form-group">
+                    <label>Facility Name</label>
+
+                    <input type="text" id="facilityName" placeholder="Eko Heights" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Address</label>
+
+                    <input type="text" id="facilityAddress" placeholder="Victoria Island, Lagos" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Description</label>
+
+                    <textarea id="facilityDescription" placeholder="Describe the facility..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Total Floors</label>
+
+                    <input type="number" id="facilityFloors" min="1" value="1" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Image URL</label>
+
+                    <input type="url" id="facilityImage" placeholder="https://...">
+                </div>
+
+                <button type="submit" class="btn btn-primary full-width">
+                    Add Facility
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- ================= APARTMENT MODAL ================= -->
+
+    <div class="modal" id="apartmentModal">
+
+        <div class="modal-content">
+
+            <button class="close-btn" onclick="closeApartmentModal()">
+                ×
+            </button>
+
+            <span class="section-label">
+                ADMINISTRATION
+            </span>
+
+            <h2>Add Apartment</h2>
+
+            <p class="modal-subtitle">
+                Add an apartment and assign it to a facility.
+            </p>
+
+            <form id="apartmentForm">
+
+                <div class="form-group">
+
+                    <label>Facility</label>
+
+                    <select id="apartmentFacility" required>
+
+                        <option value="">
+                            Select facility
+                        </option>
+
+
+                    </select>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Apartment Number</label>
+
+                    <input type="text" id="apartmentNumber" placeholder="A104" required>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Apartment Name</label>
+
+                    <input type="text" id="apartmentName" placeholder="Luxury 2 Bedroom" required>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Apartment Type</label>
+
+                    <select id="apartmentType" required>
+
+                        <option value="">
+                            Select type
+                        </option>
+
+                        <option value="Studio">
+                            Studio
+                        </option>
+
+                        <option value="1 Bedroom">
+                            1 Bedroom
+                        </option>
+
+                        <option value="2 Bedroom">
+                            2 Bedroom
+                        </option>
+
+                        <option value="3 Bedroom">
+                            3 Bedroom
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label>Bedrooms</label>
+
+                        <input type="number" id="apartmentBedrooms" min="1" value="1" required>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Bathrooms</label>
+
+                        <input type="number" id="apartmentBathrooms" min="1" value="1" required>
+
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Monthly Price</label>
+
+                    <input type="number" id="apartmentPrice" min="0" placeholder="150000" required>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Image URL</label>
+
+                    <input type="url" id="apartmentImage" placeholder="https://...">
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Description</label>
+
+                    <textarea id="apartmentDescription" placeholder="Describe the apartment..." required></textarea>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Amenities</label>
+
+                    <input type="text" id="apartmentAmenities" placeholder="WiFi, Parking, Gym, Security">
+
+                    <small class="form-help">
+                        Separate amenities with commas.
+                    </small>
+
+                </div>
+
+                <button type="submit" class="btn btn-primary full-width">
+                    Add Apartment
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+
+
+
+    <!-- STAFF ACCOUNT MODAL -->
+    <div class="modal" id="staffModal">
+      <div class="modal-content">
+        <button class="close-btn" onclick="closeStaffModal()">×</button>
+        <span class="section-label">ADMINISTRATION</span>
+        <h2>Create Staff Account</h2>
+        <p class="modal-subtitle">Create login details for a new staff member.</p>
+        <form id="staffForm">
+          <div class="form-group"><label>Full Name</label><input id="staffName" required></div>
+          <div class="form-row">
+            <div class="form-group"><label>Username</label><input id="staffUsername" required></div>
+            <div class="form-group"><label>Password</label><input id="staffPassword" type="password" minlength="4" required></div>
+          </div>
+          <div class="form-group"><label>Email</label><input id="staffEmail" type="email" required></div>
+          <div class="form-row">
+            <div class="form-group"><label>Phone</label><input id="staffPhone" required></div>
+            <div class="form-group"><label>Job Role</label><input id="staffJobRole" placeholder="Manager, Maintenance..." required></div>
+          </div>
+          <button class="btn btn-primary full-width" type="submit">Create Staff Account</button>
+        </form>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
